@@ -1,55 +1,64 @@
-import { Body, Injectable, NotFoundException, Param } from "@nestjs/common";
-import { UserPayload } from "../models/user.payload";
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { UserEntity } from "../entities/user.entity";
+import { CreateUserPayload } from "../models/create-user.payload";
+import { UpdateUserPayload } from "../models/update-user.payload";
 import { UserProxy } from "../models/user.proxy";
 
 @Injectable()
+
 export class UserService {
 
-    // CRUD - Create Read Update Delete
-    public listUsers: UserProxy[] = [];
+  constructor(
+    @InjectRepository(UserEntity)
+    private readonly repository: Repository<UserEntity>,
+  ) { }
 
-    public getUsers(): UserProxy[] {
-        return this.listUsers;
-    }
+  // CRUD - Create Read Update Delete
+  public listUsers: UserProxy[] = [];
 
-    public getOneUser(@Param('userId') userId: string): UserProxy {
-        const user = this.listUsers.find(user => user.id === +userId);
+  public getUsers(): UserProxy[] {
+    return this.listUsers;
+  }
 
-        if (!user)
-            throw new NotFoundException('Usuário não existe.');
+  public getOneUser(userId: string): UserProxy {
+    const user = this.listUsers.find(user => user.id === +userId);
 
-        return user;
-    }
+    if (!user)
+      throw new NotFoundException('Usuário não existe.');
 
-    public postUser(@Body() user: UserProxy): UserProxy {
-        this.listUsers.push(user);
+    return user;
+  }
 
-        return user;
-    }
+  public postUser(user: CreateUserPayload): UserProxy {
+    this.listUsers.push(user);
 
-    public putUser(@Param('userId') userId: string, @Body() user: UserPayload): UserProxy {
-        const index = this.listUsers.findIndex(user => user.id === +userId);
+    return user;
+  }
 
-        if (index === -1)
-            throw new NotFoundException('Usuário não existe.');
+  public putUser(userId: string, user: UpdateUserPayload): UserProxy {
+    const index = this.listUsers.findIndex(user => user.id === +userId);
 
-        this.listUsers[index] = this.getProxyFromPayload(user, this.listUsers[index]);
+    if (index === -1)
+      throw new NotFoundException('Usuário não existe.');
 
-        return this.listUsers[index];
-    }
+    this.listUsers[index] = this.getProxyFromPayload(user, this.listUsers[index]);
 
-    public deleteUser(@Param('userId') userId: string): void {
-        this.listUsers = this.listUsers.filter(user => user.id !== +userId);
-    }
+    return this.listUsers[index];
+  }
 
-    private getProxyFromPayload(payload: UserPayload, proxy: UserProxy): UserProxy {
-        return new UserProxy(
-            proxy.id,
-            payload.name || proxy.name,
-            payload.age || proxy.age,
-            proxy.isGraduated,
-        );
-    }
+  public deleteUser(userId: string): void {
+    this.listUsers = this.listUsers.filter(user => user.id !== +userId);
+  }
+
+  private getProxyFromPayload(payload: UpdateUserPayload, proxy: UserProxy): UserProxy {
+    return new UserProxy(
+      proxy.id,
+      payload.name || proxy.name,
+      payload.age || proxy.age,
+      proxy.isGraduated,
+    );
+  }
 
 }
-
