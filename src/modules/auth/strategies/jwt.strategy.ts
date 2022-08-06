@@ -22,4 +22,4 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     return await this.service.validateJwt(payload);
   }
 
-} 
+}

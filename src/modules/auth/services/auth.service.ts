@@ -43,4 +43,4 @@ export class AuthService {
     return await this.userService.getOneUser(payload.id);
   }
 
-} 
+}

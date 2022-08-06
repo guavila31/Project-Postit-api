@@ -12,7 +12,7 @@ export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly repository: Repository<UserEntity>,
-  ) { }
+  ) {}
 
   public getRepository(): Repository<UserEntity> {
     return this.repository;
@@ -23,7 +23,7 @@ export class UserService {
       order: {
         name: 'ASC',
       },
-      where: search ? { name: Like('%' + search + '%'), } : {},
+      where: search ? { name: Like('%' + search + '%'), } : { },
     });
 
     return users;
@@ -81,7 +81,6 @@ export class UserService {
 
     if (requestUser.id !== user.id)
       throw new ForbiddenException('Você não tem permissão para deletar esse usuário');
-
 
     await this.repository.remove(user);
   }

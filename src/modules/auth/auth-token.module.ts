@@ -15,4 +15,4 @@ import { enviroment } from "src/environment/environment";
     JwtModule,
   ],
 })
-export class AuthTokenModule {} 
+export class AuthTokenModule {}
