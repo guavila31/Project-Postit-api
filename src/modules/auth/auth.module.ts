@@ -19,8 +19,9 @@ import { LocalStrategy } from "./strategies/local.strategy";
   ],
   providers: [
     AuthService,
-    LocalStrategy,
     JwtStrategy,
+    LocalStrategy
+    
   ],
   exports: [
     AuthService,
